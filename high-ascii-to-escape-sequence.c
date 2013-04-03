@@ -6,7 +6,7 @@
 static FILE *in, *out;
 
 static void options(int argc, char *argv[]) {
-  if (argc == 1) {
+	if (argc == 1) {
 		in = stdin;
 		out = stdout;
 		return;
