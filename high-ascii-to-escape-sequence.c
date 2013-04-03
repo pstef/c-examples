@@ -9,7 +9,7 @@ static FILE *in, *out;
 int main(int argc, char *argv[]) {
 	options(argc, argv);
 
-	typedef enum token {
+	enum token {
 		N, NEWLINE = N,
 		D, DOUBLE = D,
 		S, SLASH = S,
@@ -17,8 +17,7 @@ int main(int argc, char *argv[]) {
 		A, ASTERISK = A,
 		C, CHAR = C,
 		MAX_TOKEN
-	}
-	token;
+	};
 
 	enum effect {
 		PUT,
@@ -36,7 +35,8 @@ int main(int argc, char *argv[]) {
 	};
 
 	typedef struct transition {
-		unsigned char next, effect;
+		enum state next;
+		enum effect effect;
 	}
 	transition;
 
@@ -51,10 +51,10 @@ int main(int argc, char *argv[]) {
 	};
 
 	int c;
-	transition state = {CODE, CHAR};
+	transition state = {CODE, PUT};
 
 	while (c = getc(in), c != EOF) {
-		token t;
+		enum token t;
 
 		switch (c) {
 		case '*':  t = ASTERISK; break;
