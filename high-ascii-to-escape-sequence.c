@@ -34,13 +34,12 @@ int main(int argc, char *argv[]) {
 		MAX_STATE
 	};
 
-	typedef struct transition {
+	struct transition {
 		enum state next;
 		enum effect effect;
-	}
-	transition;
+	};
 
-	transition table[MAX_STATE][MAX_TOKEN] = {
+	struct transition table[MAX_STATE][MAX_TOKEN] = {
 		/*                NEWLINE,         DOUBLE,          SLASH,           HIGH,       ASTERISK,           CHAR */
 		[CODE] = { [N]={CODE,PUT}, [D]={STRN,PUT}, [S]={MBCM,PUT}, [H]={CODE,ESC}, [A]={CODE,PUT}, [C]={CODE,PUT} },
 		[STRN] = { [N]={STRN,PUT}, [D]={CODE,PUT}, [S]={STRN,PUT}, [H]={STRN,ESC}, [A]={STRN,PUT}, [C]={STRN,PUT} },
@@ -51,22 +50,22 @@ int main(int argc, char *argv[]) {
 	};
 
 	int c;
-	transition state = {CODE, PUT};
+	struct transition transition = {CODE, PUT};
 
 	while (c = getc(in), c != EOF) {
-		enum token t;
+		enum token token;
 
 		switch (c) {
-		case '*':  t = ASTERISK; break;
-		case '"':  t = DOUBLE;   break;
-		case '/':  t = SLASH;    break;
-		case '\n': t = NEWLINE;  break;
-		default:   t = (c & 128) ? HIGH : CHAR; break;
+		case '*':  token = ASTERISK; break;
+		case '"':  token = DOUBLE;   break;
+		case '/':  token = SLASH;    break;
+		case '\n': token = NEWLINE;  break;
+		default:   token = (c & 128) ? HIGH : CHAR; break;
 		}
 
-		state = table[state.next][t];
+		transition = table[transition.next][token];
 
-		switch (state.effect) {
+		switch (transition.effect) {
 		case PUT:
 			if (EOF == putc(c, out))
 				unable_to_write();
