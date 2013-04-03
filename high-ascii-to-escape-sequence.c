@@ -1,37 +1,10 @@
-/* The effect of learning FSMs from Kate. */
-
 #include <stdio.h>
 #include <stdlib.h>
 
+static void options(int argc, char *argv[]);
+static inline void unable_to_write(void);
+
 static FILE *in, *out;
-
-static void options(int argc, char *argv[]) {
-	if (argc == 1) {
-		in = stdin;
-		out = stdout;
-		return;
-	}
- 
-	if (argc != 3) {
-		fprintf(stderr, "Expected either 0 or 2 arguments.\n");
-		exit(EXIT_FAILURE);
-	}
-	if (!(in = fopen(argv[1], "r"))) {
-		perror(argv[1]);
-		exit(EXIT_FAILURE);
-	}
-	if (!(out = fopen(argv[2], "w"))) {
-		perror(argv[2]);
-		exit(EXIT_FAILURE);
-	}
- 
-	return;
-}
-
-static inline void unable_to_write(void) {
-	perror("Unable to write to destination file");
-	exit(EXIT_FAILURE);
-}
 
 int main(int argc, char *argv[]) {
 	options(argc, argv);
@@ -111,4 +84,32 @@ int main(int argc, char *argv[]) {
 	}
  
 	exit(EXIT_SUCCESS);
+}
+
+static void options(int argc, char *argv[]) {
+	if (argc == 1) {
+		in = stdin;
+		out = stdout;
+		return;
+	}
+ 
+	if (argc != 3) {
+		fprintf(stderr, "Expected either 0 or 2 arguments.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (!(in = fopen(argv[1], "r"))) {
+		perror(argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	if (!(out = fopen(argv[2], "w"))) {
+		perror(argv[2]);
+		exit(EXIT_FAILURE);
+	}
+ 
+	return;
+}
+
+static inline void unable_to_write(void) {
+	perror("Unable to write to destination file");
+	exit(EXIT_FAILURE);
 }
